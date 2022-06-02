@@ -26,16 +26,14 @@ def fake_email(number):
     with open('some.csv', 'w') as file:
         names = ['Name', 'E-mail']
         writer = csv.DictWriter(file, fieldnames=names)
-        # list_fake_name = []
         list_fake_email = []
         domain_name = ['gmail', 'yahoo']
         numbers = range(100)
         for _ in range(number):
             fake_first_and_last_name = fake.first_name()
-            # list_fake_name += [f'<p>{fake_first_and_last_name}']
             name = fake_first_and_last_name.lower()
-            list_fake_email += [{"Name": f'{fake_first_and_last_name}: ',
-                                 "E-mail": f'{name}_{choice(numbers)}@{choice(domain_name)}.com<p>'}]
+            list_fake_email += [{"Name": f'<p>{fake_first_and_last_name}: ',
+                                 "E-mail": f'{name}_{choice(numbers)}@{choice(domain_name)}.com</p>'}]
         writer.writeheader()
         for each_fake_name in list_fake_email:
             writer.writerow(each_fake_name)
