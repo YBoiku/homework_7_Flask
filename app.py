@@ -46,8 +46,8 @@ def fake_email(number):
                 writer.writerow({"Name": each_fake_name, "E-mail": each_fake_email})
     with open('some.csv', 'r') as file:
         read = csv.DictReader(file)
+        file_1 = []
         for row in read:
-            file_1 = []
             file_1 += row['Name'], row['E-mail']
     return " ".join(file_1)
 
