@@ -1,9 +1,7 @@
 from flask import Flask
-from faker import Faker
-from random import choice
-import csv
-
-fake = Faker()
+import requests
+import pandas as pd
+from create_fake_users import fake_name_and_email
 
 app = Flask(__name__)
 
@@ -22,28 +20,22 @@ def requirements():
 
 
 @app.route('/generate-users/<int:number>')
-def fake_email(number):
-    with open('some.csv', 'w') as file:
-        names = ['Name', 'E-mail']
-        writer = csv.DictWriter(file, fieldnames=names)
-        list_fake_email = []
-        domain_name = ['gmail', 'yahoo']
-        numbers = range(100)
-        for _ in range(number):
-            fake_first_and_last_name = fake.first_name()
-            name = fake_first_and_last_name.lower()
-            list_fake_email += [{"Name": f'<p>{fake_first_and_last_name}: ',
-                                 "E-mail": f'{name}_{choice(numbers)}@{choice(domain_name)}.com</p>'}]
-        writer.writeheader()
-        for each_fake_name in list_fake_email:
-            writer.writerow(each_fake_name)
-    with open('some.csv', 'r') as file:
-        read = csv.DictReader(file)
-        file_1 = []
-        for row in read:
-            file_1 += row['Name'], row['E-mail']
-        file.close()
-    return " ".join(file_1)
+def create_name_and_email(number):
+    return fake_name_and_email(number)
+
+
+@app.route('/space')
+def astronaut():
+    number_of_astronauts = requests.get('http://api.open-notify.org/astros.json')
+    return f'Number of astronauts is {str(number_of_astronauts.json()["number"])}'
+
+
+@app.route('/mean')
+def average_height_and_weight():
+    data = pd.read_csv('people_data.csv')
+    average_height_in_cm = round(((data[' "Height(Inches)"'].mean()) * 2.54), 2)
+    average_weight_in_kg = round(((data[' "Weight(Pounds)"'].mean()) / 2.205), 2)
+    return f"<p>Average height: {average_height_in_cm} cm.</p> <p>Average weight: {average_weight_in_kg} kg.</p>"
 
 
 if __name__ == '__main__':
